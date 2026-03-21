@@ -1,0 +1,5 @@
+tagret/
+*.log
+*.class
+.env
+*.db
