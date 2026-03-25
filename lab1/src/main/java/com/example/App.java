@@ -11,7 +11,8 @@ public class App {
 
 
     public static void main(String[] args) {
-        port(3000);
+    	ipAddress("127.0.0.1");
+    	port(3000);
 
         get("/health/alive", (req, res) -> "OK");
 

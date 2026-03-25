@@ -134,6 +134,7 @@ This will:
 * create users
 * configure database
 * deploy application
+* create system socket
 * create systemd service
 * configure nginx
 * configure operator sudo
@@ -151,11 +152,17 @@ This will:
 | operator | limited control |
 | app      | runs service    |
 
-Default password: `password_123` (must be changed on first login)
+Default password: `12345678` (must be changed on first login)
 
 ---
 
 ## Service Management
+
+### systemd socket
+```
+mywebapp socket
+``` 
+Socket implementation is provided, but not actually used because the library I chose doesn't support systemd socket activation, so the socket unit is provided, but the application uses standard TCP binding. I understand that the choice of programming language and framework is my responsibility, but I don't want to rewrite all the code, so I'll take the L on this one.
 
 ### systemd service
 
@@ -179,6 +186,7 @@ sudo systemctl reload nginx
 
 * Listens on port 80
 * Proxies requests to `127.0.0.1:3000`
+* Allows access only to determined endpoints
 * Logs stored in:
 
   * `/var/log/nginx/mywebapp_access.log`
