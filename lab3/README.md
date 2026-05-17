@@ -354,6 +354,17 @@ pom.xml
 
 ---
 
+# CI/CD
+
+This project uses GitHub Actions for:
+- linting
+- testing
+- Docker image build
+- deployment
+- verification
+
+---
+
 ## Notes
 
 * script deployment uses system-level services
