@@ -1,0 +1,53 @@
+---
+name: Lint
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - main
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lab3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('lab3/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Run Maven verification
+        run: mvn verify
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+      - name: Run ShellCheck
+        run: |
+          find scripts -type f -name "*.sh" -exec shellcheck {} \; || true
+      - name: Install Yamllint
+        run: sudo apt-get install -y yamllint
+      - name: Run Yamllint
+        run: yamllint .
+      - name: Install Hadolint
+        run: >
+          wget -O /usr/local/bin/hadolint
+          https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+
+          chmod +x /usr/local/bin/hadolint
+      - name: Run Hadolint
+        run: hadolint Dockerfile.app
