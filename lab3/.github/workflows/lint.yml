@@ -1,15 +1,8 @@
 ---
 name: Lint
-on:
+on:  # yamllint disable-line rule:truthy
   push:
-    branches:
-      - main
-      - ci-cd-setup
-    tags:
-      - "*"
   pull_request:
-    branches:
-      - main
 jobs:
   lint:
     runs-on: ubuntu-latest
