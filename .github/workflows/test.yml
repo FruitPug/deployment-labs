@@ -1,8 +1,14 @@
 ---
 name: Test
 on:  # yamllint disable-line rule:truthy
-  push: null
-  pull_request: null
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - main
 jobs:
   test:
     runs-on: ubuntu-latest
