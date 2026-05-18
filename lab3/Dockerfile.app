@@ -1,4 +1,4 @@
-FROM maven:3.9-eclipse-temurin-17 AS builder
+FROM maven:3.9.15-eclipse-temurin-17 AS builder
 
 WORKDIR /build
 
@@ -10,7 +10,7 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 
-FROM gcr.io/distroless/java17-debian13
+FROM gcr.io/distroless/java17-debian13@sha256:2da17315bae0e8c052046625fa444a41f4da1b148253a2ad013dd18cc5e7a55e
 
 WORKDIR /app
 

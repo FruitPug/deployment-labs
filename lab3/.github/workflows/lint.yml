@@ -1,0 +1,52 @@
+---
+name: Lint
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - main
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Run Maven verification
+        run: mvn verify
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Run ShellCheck
+        run: |
+          find scripts -type f -name "*.sh" -exec shellcheck {} \;
+      - name: Install Yamllint
+        run: sudo apt-get install -y yamllint
+      - name: Run Yamllint
+        run: yamllint .
+      - name: Install Hadolint
+        run: >
+          wget -O hadolint \
+
+          https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+
+
+          chmod +x hadolint
+
+          sudo mv hadolint /usr/local/bin/
+      - name: Run Hadolint
+        run: hadolint Dockerfile.app
