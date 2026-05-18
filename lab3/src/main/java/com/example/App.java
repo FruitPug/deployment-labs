@@ -123,18 +123,19 @@ public class App {
     }
 
     private static Connection connect() throws Exception {
-        String host = requireEnv("DB_HOST");
-        String database = requireEnv("DB_NAME");
+    	String url = requireEnv("DB_URL");
         String user = requireEnv("DB_USER");
         String password = requireEnv("DB_PASSWORD");
-        String dbPort = requireEnv("DB_PORT");
-        String url = "jdbc:mariadb://" + host + ":" + dbPort + "/" + database;
 
         return DriverManager.getConnection(url, user, password);
     }
 
     private static String requireEnv(String name) {
-        String value = System.getenv(name);
+        String value = System.getProperty(name);
+        
+        if (value == null || value.isBlank()) {
+             value = System.getenv(name);
+        }
     
          if (value == null || value.isBlank()) {
              throw new IllegalStateException(
