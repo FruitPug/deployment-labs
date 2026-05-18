@@ -1,8 +1,8 @@
 ---
 name: Lint
 on:  # yamllint disable-line rule:truthy
-  push:
-  pull_request:
+  push: null
+  pull_request: null
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -39,10 +39,9 @@ jobs:
         run: yamllint .
       - name: Install Hadolint
         run: >
-          wget -O hadolint \
+          wget -O /usr/local/bin/hadolint
           https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
 
-          chmod +x hadolint
-          sudo mv hadolint /usr/local/bin/
+          chmod +x /usr/local/bin/hadolint
       - name: Run Hadolint
         run: hadolint Dockerfile.app
