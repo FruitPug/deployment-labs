@@ -1,14 +1,9 @@
 ---
 name: Lint
 on:  # yamllint disable-line rule:truthy
-  push:
-    branches:
-      - main
-    tags:
-      - '*'
-  pull_request:
-    branches:
-      - main
+  push: null
+  pull_request: null
+  workflow_dispatch: null
 jobs:
   lint:
     runs-on: ubuntu-latest

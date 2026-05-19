@@ -1,11 +1,9 @@
 ---
 name: Build and Publish
 on:  # yamllint disable-line rule:truthy
-  push:
-    branches:
-      - main
-    tags:
-      - "*"
+  push: null
+  pull_request: null
+  workflow_dispatch: null
 jobs:
   build:
     runs-on: ubuntu-latest
