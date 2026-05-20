@@ -1,9 +1,9 @@
 ---
 name: Deploy
 on:  # yamllint disable-line rule:truthy
-  push:
-    tags:
-      - v*
+  push: null
+    #tags:
+      #- v*
 jobs:
   deploy:
     runs-on:
@@ -24,8 +24,7 @@ jobs:
       - name: Copy deployment script
         run: >
           scp scripts/cd/deploy.sh
-            ${{ secrets.TARGET_USER }}@
-            ${{ secrets.TARGET_HOST }}:/opt/mywebapp/deploy.sh
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/deploy.sh
       - name: Run deployment
         run: |
           ssh
