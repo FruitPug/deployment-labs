@@ -1,0 +1,58 @@
+---
+services:
+  db:
+    image: mariadb:12
+    container_name: mywebapp-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./migrate.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test:
+        - CMD
+        - healthcheck.sh
+        - --connect
+        - --innodb_initialized
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - mynetwork
+  app:
+    container_name: mywebapp-app
+    image: ghcr.io/fruitpug/deployment-labs/mywebapp:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_HOST: 0.0.0.0
+      APP_PORT: 3000
+      DB_URL: jdbc:mariadb://db:3306/mywebapp
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+    restart: always
+    networks:
+      - mynetwork
+  nginx:
+    image: nginx:1.28.3
+    container_name: mywebapp-nginx
+    depends_on:
+      - app
+    ports:
+      - 80:80
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - mynetwork
+volumes:
+  db_data: null
+networks:
+  mynetwork:
+    driver: bridge

@@ -26,13 +26,13 @@ jobs:
           scp ./lab3/scripts/cd/deploy.sh \
             ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/deploy.sh
 
-          scp ./lab3/docker-compose.yml \
+          scp ./lab3/scripts/cd/docker-compose.yml \
             ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/docker-compose.yml
 
-          scp ./lab3/migrate.sql \
+          scp ./lab3/scripts/cd/migrate.sql \
             ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/migrate.sql
 
-          scp ./lab3/nginx.conf \
+          scp ./lab3/scripts/cd/nginx.conf \
             ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/nginx.conf
       - name: Run deployment
         run: |
