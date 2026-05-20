@@ -34,8 +34,16 @@ jobs:
 
           scp ./lab3/scripts/cd/nginx.conf \
             ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/nginx.conf
+
+          scp ./lab3/scripts/cd/verify.sh \
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/verify.sh
       - name: Run deployment
         run: |
           ssh \
             ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }} \
             'chmod +x /opt/mywebapp/deploy.sh && bash /opt/mywebapp/deploy.sh'
+      - name: Verify deployment
+        run: |
+          ssh \
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }} \
+            'bash /opt/mywebapp/verify.sh'
