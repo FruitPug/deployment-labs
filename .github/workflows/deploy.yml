@@ -23,5 +23,6 @@ jobs:
           ssh-keyscan -H ${{ secrets.TARGET_HOST }} >> ~/.ssh/known_hosts
       - name: Deploy application
         run: |
-          ssh ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}
+          ssh ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }} << 'EOF'
             'bash /opt/mywebapp/deploy.sh'
+          EOF
