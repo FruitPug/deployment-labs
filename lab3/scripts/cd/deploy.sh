@@ -4,6 +4,8 @@ set -e
 
 cd /opt/mywebapp
 
+docker compose down
+
 MAX_RETRIES=5
 RETRY_DELAY=10
 
