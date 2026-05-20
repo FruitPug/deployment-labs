@@ -24,20 +24,16 @@ jobs:
       - name: Copy files to target
         run: >
           scp ./lab3/scripts/cd/deploy.sh \
-            ${{ secrets.TARGET_USER }}@ \
-            ${{ secrets.TARGET_HOST }}:/opt/mywebapp/deploy.sh
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/deploy.sh
 
           scp ./lab3/docker-compose.yml \
-            ${{ secrets.TARGET_USER }}@ \
-            ${{ secrets.TARGET_HOST }}:/opt/mywebapp/docker-compose.yml
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/docker-compose.yml
 
           scp ./lab3/migrate.sql \
-            ${{ secrets.TARGET_USER }}@ \
-            ${{ secrets.TARGET_HOST }}:/opt/mywebapp/migrate.sql
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/migrate.sql
 
           scp ./lab3/nginx.conf \
-            ${{ secrets.TARGET_USER }}@ \
-            ${{ secrets.TARGET_HOST }}:/opt/mywebapp/nginx.conf
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/nginx.conf
       - name: Run deployment
         run: |
           ssh \
