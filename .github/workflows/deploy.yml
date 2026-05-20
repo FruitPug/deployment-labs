@@ -23,7 +23,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.TARGET_HOST }} >> ~/.ssh/known_hosts
       - name: Copy deployment script
         run: >
-          scp scripts/cd/deploy.sh \
+          scp ./lab3/scripts/cd/deploy.sh \
             ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/deploy.sh
       - name: Run deployment
         run: |
