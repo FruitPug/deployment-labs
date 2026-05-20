@@ -2,6 +2,8 @@
 
 set -e
 
+cd /opt/mywebapp
+
 BASE_URL="http://localhost"
 
 printf "\nChecking nginx config..."
