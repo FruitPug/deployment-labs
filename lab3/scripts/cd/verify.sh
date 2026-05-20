@@ -5,7 +5,7 @@ set -e
 BASE_URL="http://localhost"
 
 printf "\nChecking nginx config..."
-sudo nginx -t
+docker compose exec nginx nginx -t
 
 printf "\nChecking alive endpoint..."
 curl -f ${BASE_URL}/health/alive
