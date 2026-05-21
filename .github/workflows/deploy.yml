@@ -2,8 +2,8 @@
 name: Deploy
 on:  # yamllint disable-line rule:truthy
   push:
-    tags:
-      - v*
+    #tags:
+      #- v*
 jobs:
   deploy:
     runs-on:

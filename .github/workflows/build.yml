@@ -2,10 +2,10 @@
 name: Build and Publish
 on:  # yamllint disable-line rule:truthy
   push:
-    #branches:
-      #- main
-    #tags:
-      #- '*'
+    branches:
+      - main
+    tags:
+      - '*'
 jobs:
   build:
     runs-on: ubuntu-latest
