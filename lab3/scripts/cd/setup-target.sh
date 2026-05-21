@@ -12,7 +12,6 @@ apt install -y \
     ca-certificates \
     gnupg \
     lsb-release \
-    nginx
 
 echo "== Installing Docker =="
 curl -fsSL https://get.docker.com | sh
