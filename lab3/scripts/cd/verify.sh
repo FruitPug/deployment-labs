@@ -10,7 +10,7 @@ printf "\nChecking nginx config..."
 docker compose exec nginx nginx -t
 
 printf "\nChecking alive endpoint..."
-curl -f ${BASE_URL}/health/alive
+curl -f ${BASE_URL}/health/bruh
 
 printf "\nChecking ready endpoint..."
 curl -f ${BASE_URL}/health/ready
