@@ -1,0 +1,51 @@
+---
+name: Deploy
+on:  # yamllint disable-line rule:truthy
+  push:
+    tags:
+      - v*
+jobs:
+  deploy:
+    runs-on:
+      - self-hosted
+      - deployment
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+
+          chmod 600 ~/.ssh/id_ed25519
+
+          touch ~/.ssh/known_hosts
+
+          ssh-keyscan -H ${{ secrets.TARGET_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+      - name: Copy files to target
+        run: >
+          scp ./lab3/scripts/cd/deploy.sh \
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/deploy.sh
+
+          scp ./lab3/scripts/cd/docker-compose.yml \
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/docker-compose.yml
+
+          scp ./lab3/scripts/cd/migrate.sql \
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/migrate.sql
+
+          scp ./lab3/scripts/cd/nginx.conf \
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/nginx.conf
+
+          scp ./lab3/scripts/cd/verify.sh \
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}:/opt/mywebapp/verify.sh
+      - name: Run deployment
+        run: |
+          ssh \
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }} \
+            'chmod +x /opt/mywebapp/deploy.sh && bash /opt/mywebapp/deploy.sh'
+      - name: Verify deployment
+        run: |
+          ssh \
+            ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }} \
+            'bash /opt/mywebapp/verify.sh'
