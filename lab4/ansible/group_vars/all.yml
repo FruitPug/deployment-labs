@@ -1,1 +1,13 @@
 mysql_socket: /run/mysqld/mysqld.sock
+
+db_name: mywebapp
+db_user: mywebapp
+db_password: mywebapp_password
+db_host: 10.10.0.20
+db_port: 3306
+
+app_name: mywebapp
+app_port: 3000
+
+app_jar_src: ../target/mywebapp-1.0-SNAPSHOT.jar
+app_jar_dest: /opt/mywebapp/mywebapp-1.0-SNAPSHOT.jar

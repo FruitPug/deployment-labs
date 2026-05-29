@@ -15,6 +15,5 @@
   become: true
 
   roles:
-    #- app
-    #- nginx
-    #- firewall
+    - app
+    - nginx
