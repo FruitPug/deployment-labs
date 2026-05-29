@@ -123,8 +123,7 @@ public class App {
     }
 
     private static Connection connect() throws Exception {
-    	String url = requireEnv("DB_URL");
-        String user = requireEnv("DB_USER");
+    
         String password = requireEnv("DB_PASSWORD");
 
         return DriverManager.getConnection(url, user, password);
