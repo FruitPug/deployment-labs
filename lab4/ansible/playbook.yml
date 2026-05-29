@@ -9,7 +9,7 @@
   become: true
 
   roles:
-    #- database
+    - database
 
 - hosts: workers
   become: true

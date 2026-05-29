@@ -1,6 +1,6 @@
-resource "libvirt_volume" "worker_disk" {
-  name = "worker.qcow2"
-  pool = "default"
+resource "libvirt_volume" "ubuntu_base" {
+  name   = "ubuntu-base.qcow2"
+  pool   = "default"
 
   create = {
     content = {
@@ -9,25 +9,46 @@ resource "libvirt_volume" "worker_disk" {
     }
     permissions = {
       mode  = "0644"
-      owner = "64055"  
-      group = "993"    
+      owner = "64055"
+      group = "993"
+    }
+  }
+}
+
+resource "libvirt_volume" "worker_disk" {
+  name     = "worker.qcow2"
+  pool     = "default"
+  capacity = 3221225472
+
+  target = {
+    format = {
+      type = "qcow2"
+    }
+  }
+
+  backing_store = {
+    path = libvirt_volume.ubuntu_base.path
+    format = {
+      type = "qcow2"
     }
   }
 }
 
 resource "libvirt_volume" "db_disk" {
-  name = "db.qcow2"
-  pool = "default"
+  name     = "db.qcow2"
+  pool     = "default"
+  capacity = 3221225472
 
-  create = {
-    content = {
-      url    = "file://${var.ubuntu_image}"
-      format = "qcow2"
+  target = {
+    format = {
+      type = "qcow2"
     }
-    permissions = {
-      mode  = "0644"
-      owner = "64055"  
-      group = "993"    
+  }
+
+  backing_store = {
+    path = libvirt_volume.ubuntu_base.path
+    format = {
+      type = "qcow2"
     }
   }
 }
@@ -107,6 +128,22 @@ resource "libvirt_domain" "worker" {
       }
     ]
 
+    channels = [
+     {
+       source = {
+         unix = {
+           mode = "bind"
+         }
+       }
+       target = {
+         type = "virtio"
+         virt_io = {
+           name = "org.qemu.guest_agent.0"
+         }
+       }
+     }
+   ]
+
     consoles = [
       {
         type        = "pty"
@@ -177,6 +214,22 @@ resource "libvirt_domain" "db" {
         source = {
           network = {
             network = libvirt_network.lab4_network.name
+          }
+        }
+      }
+    ]
+
+    channels = [
+      {
+        source = {
+          unix = {
+            mode = "bind"
+          }
+        }
+        target = {
+          type = "virtio"
+          virt_io = {
+            name = "org.qemu.guest_agent.0"
           }
         }
       }

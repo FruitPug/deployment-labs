@@ -1,0 +1,73 @@
+- name: Install MariaDB packages
+  apt:
+    name:
+      - mariadb-server
+      - python3-pymysql
+    state: present
+    update_cache: true
+
+- name: Ensure MariaDB is enabled
+  service:
+    name: mariadb
+    enabled: true
+    state: started
+
+- name: Configure MariaDB bind address
+  template:
+    src: 50-server.cnf.j2
+    dest: /etc/mysql/mariadb.conf.d/50-server.cnf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart MariaDB
+
+- name: Create application database
+  community.mysql.mysql_db:
+    name: mywebapp
+    state: present
+    login_unix_socket: "{{ mysql_socket }}"
+
+- name: Create application DB user
+  community.mysql.mysql_user:
+    name: mywebapp
+    password: mywebapp_password
+    host: 10.10.0.10
+    priv: "mywebapp.*:ALL"
+    state: present
+    login_unix_socket: "{{ mysql_socket }}"
+
+- name: Copy migration SQL
+  copy:
+    src: migrate.sql
+    dest: /tmp/migrate.sql
+    mode: '0644'
+
+- name: Apply database schema
+  community.mysql.mysql_db:
+    name: mywebapp
+    state: import
+    target: /tmp/migrate.sql
+    login_unix_socket: "{{ mysql_socket }}"
+
+- name: Allow SSH
+  community.general.ufw:
+    rule: allow
+    port: '22'
+    proto: tcp
+
+- name: Allow MariaDB from worker VM
+  community.general.ufw:
+    rule: allow
+    port: '3306'
+    proto: tcp
+    from_ip: 10.10.0.10
+
+- name: Deny MariaDB from everywhere else
+  community.general.ufw:
+    rule: deny
+    port: '3306'
+    proto: tcp
+
+- name: Enable UFW
+  community.general.ufw:
+    state: enabled
