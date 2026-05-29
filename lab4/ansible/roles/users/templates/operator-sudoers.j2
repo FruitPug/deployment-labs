@@ -1,0 +1,6 @@
+operator ALL=(ALL) NOPASSWD: /usr/bin/systemctl start mywebapp
+operator ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop mywebapp
+operator ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart mywebapp
+operator ALL=(ALL) NOPASSWD: /usr/bin/systemctl status mywebapp
+operator ALL=(ALL) NOPASSWD: /usr/bin/systemctl reload nginx
+operator ALL=(ALL) NOPASSWD: /usr/bin/systemctl status nginx

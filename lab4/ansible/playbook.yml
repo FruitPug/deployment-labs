@@ -1,0 +1,20 @@
+- hosts: all
+  become: true
+
+  roles:
+    - common
+    - users
+
+- hosts: db
+  become: true
+
+  roles:
+    #- database
+
+- hosts: workers
+  become: true
+
+  roles:
+    #- app
+    #- nginx
+    #- firewall

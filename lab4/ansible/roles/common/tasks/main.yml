@@ -1,0 +1,36 @@
+- name: Update apt cache
+  apt:
+    update_cache: true
+
+- name: Install common packages
+  apt:
+    name:
+      - curl
+      - vim
+      - git
+      - ufw
+      - net-tools
+      - qemu-guest-agent
+    state: present
+
+- name: Enable qemu guest agent
+  service:
+    name: qemu-guest-agent
+    enabled: true
+    state: started
+
+- name: Create student home directory
+  file:
+    path: /home/student
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create gradebook file
+  copy:
+    dest: /home/student/gradebook
+    content: "22\n"
+    owner: root
+    group: root
+    mode: '0644'
