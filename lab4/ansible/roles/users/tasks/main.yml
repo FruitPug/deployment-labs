@@ -1,0 +1,32 @@
+- name: Create teacher user
+  user:
+    name: teacher
+    shell: /bin/bash
+    groups: sudo
+    append: true
+    password: "{{ '12345678' | password_hash('sha512') }}"
+
+- name: Create operator user on worker nodes
+  user:
+    name: operator
+    shell: /bin/bash
+    password: "{{ '12345678' | password_hash('sha512') }}"
+  when: "'workers' in group_names"
+
+- name: Create app system user on worker nodes
+  user:
+    name: app
+    system: true
+    shell: /usr/sbin/nologin
+    create_home: false
+  when: "'workers' in group_names"
+
+- name: Configure operator sudo permissions
+  template:
+    src: operator-sudoers.j2
+    dest: /etc/sudoers.d/operator
+    owner: root
+    group: root
+    mode: '0440'
+    validate: 'visudo -cf %s'
+  when: "'workers' in group_names"

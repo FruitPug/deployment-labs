@@ -1,0 +1,73 @@
+- name: Create application directory
+  file:
+    path: /opt/mywebapp
+    state: directory
+    owner: app
+    group: app
+    mode: '0755'
+
+- name: Copy application jar
+  copy:
+    src: "{{ app_jar_src }}"
+    dest: "{{ app_jar_dest }}"
+    owner: app
+    group: app
+    mode: '0755'
+
+- name: Deploy application environment file
+  template:
+    src: mywebapp.env.j2
+    dest: /opt/mywebapp/.env
+    owner: app
+    group: app
+    mode: '0640'
+
+- name: Deploy systemd service
+  template:
+    src: mywebapp.service.j2
+    dest: /etc/systemd/system/mywebapp.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart mywebapp
+
+- name: Enable and start mywebapp
+  systemd:
+    name: mywebapp
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Install Java runtime
+  apt:
+    name: openjdk-17-jre
+    state: present
+    update_cache: true
+
+- name: Install MySQL client
+  apt:
+    name: mysql-client
+    state: present
+    update_cache: true
+
+- name: Allow nginx HTTP
+  community.general.ufw:
+    rule: allow
+    port: '80'
+    proto: tcp
+
+- name: Allow SSH
+  community.general.ufw:
+    rule: allow
+    port: '22'
+    proto: tcp
+
+- name: Deny direct app access
+  community.general.ufw:
+    rule: deny
+    port: '3000'
+    proto: tcp
+
+- name: Enable UFW
+  community.general.ufw:
+    state: enabled

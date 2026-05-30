@@ -1,0 +1,18 @@
+[Unit]
+Description=MyWebApp
+After=network.target mariadb.service
+
+[Service]
+User=app
+Group=app
+WorkingDirectory=/opt/mywebapp
+
+EnvironmentFile=/opt/mywebapp/.env
+
+ExecStart=/usr/bin/java -jar {{ app_jar_dest }}
+
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

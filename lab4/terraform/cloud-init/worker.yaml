@@ -1,0 +1,25 @@
+#cloud-config
+
+hostname: worker
+fqdn: worker.lab4.local
+manage_etc_hosts: true
+
+users:
+  - default
+
+  - name: ansible
+    groups:
+      - sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP5exT9Uej6SNj7c4noboMpm6U7MhshyvN71d3MQRdoa user@lab3
+
+package_update: true
+
+packages:
+  - qemu-guest-agent
+
+runcmd:
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent
