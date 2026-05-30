@@ -44,6 +44,12 @@
     state: present
     update_cache: true
 
+- name: Install MySQL client
+  apt:
+    name: mysql-client
+    state: present
+    update_cache: true
+
 - name: Allow nginx HTTP
   community.general.ufw:
     rule: allow
