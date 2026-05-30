@@ -354,7 +354,155 @@ pom.xml
 
 ---
 
-# CI/CD
+# Terraform/Ansible
+
+## Overview
+
+In addition to the deployment methods described above, the application can be deployed using Infrastructure as Code (IaC).
+
+The IaC solution consists of:
+
+* Terraform for infrastructure provisioning
+* cloud-init for initial VM bootstrap
+* Ansible for configuration management
+
+The deployment creates a distributed architecture with separate application and database virtual machines.
+
+---
+
+## Architecture
+
+```text
+client
+   |
+   v
++------------------+
+|    Worker VM     |
+|------------------|
+| nginx            |
+| mywebapp         |
++------------------+
+          |
+          | MariaDB connection
+          v
++------------------+
+|      DB VM       |
+|------------------|
+| MariaDB          |
++------------------+
+```
+
+### Network Layout
+
+| Host      | Address    | Purpose             |
+| --------- | ---------- | ------------------- |
+| worker VM | 10.10.0.10 | nginx + application |
+| db VM     | 10.10.0.20 | MariaDB database    |
+
+Database access is restricted to the worker VM only.
+
+---
+
+## Terraform Deployment
+
+### Requirements
+
+* Ubuntu host with KVM/libvirt support
+* Terraform
+* libvirt provider
+* SSH key pair
+
+### Provision Infrastructure
+
+Initialize Terraform:
+
+```bash
+cd terraform
+terraform init
+```
+
+Review planned changes:
+
+```bash
+terraform plan
+```
+
+Create infrastructure:
+
+```bash
+terraform apply
+```
+
+Terraform provisions:
+
+* libvirt network
+* worker virtual machine
+* database virtual machine
+* cloud-init configuration
+
+### Destroy Infrastructure
+
+```bash
+terraform destroy
+```
+
+---
+
+## Ansible Configuration
+
+### Requirements
+
+* Ansible
+* SSH access to provisioned VMs
+
+### Configure Infrastructure
+
+After Terraform successfully creates the VMs:
+
+```bash
+ansible-playbook -i ansible/inventory/hosts.ini ansible/playbook.yml
+```
+
+Ansible performs:
+
+* system configuration
+* user creation
+* gradebook creation
+* MariaDB installation and configuration
+* database initialization
+* application deployment
+* systemd service configuration
+* nginx configuration
+* firewall configuration
+
+---
+
+## Validation
+
+Verify application availability:
+
+```bash
+curl http://10.10.0.10
+```
+
+Verify health endpoints:
+
+```bash
+curl http://10.10.0.10/health/alive
+curl http://10.10.0.10/health/ready
+```
+
+Verify task operations:
+
+```bash
+curl http://10.10.0.10/tasks
+curl -X POST "http://10.10.0.10/tasks?title=test"
+curl -X POST http://10.10.0.10/tasks/1/done
+```
+
+---
+
+# CI/CD (Lab3)
 
 This project uses GitHub Actions for:
 - linting
