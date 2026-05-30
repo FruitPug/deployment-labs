@@ -7,3 +7,8 @@ target/
 *.pem
 *.key
 .DS_Store
+*.retry
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
